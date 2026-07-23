@@ -16,7 +16,7 @@ spec:
         app: front-web
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: registry-c-mbk-secret
       containers:
         - name: front-web
           # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
