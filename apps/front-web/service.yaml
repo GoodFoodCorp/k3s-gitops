@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-web # Doit correspondre au nom du service
+  namespace: goodfood-dev # Même namespace que le deployment
+spec:
+  type: ClusterIP
+  selector:
+    app: front-web # Doit matcher le label 'app' défini dans le deployment.yaml
+  ports:
+    - protocol: TCP
+      port: 80 # Port exposé au sein du cluster
+      targetPort: 80 # Port d'écoute du conteneur Docker

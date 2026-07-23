@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-web # Remplacez par le nom de votre microservice (ex: api-gateway, auth-service)
+  namespace: goodfood-dev # Remplacez par le nom de votre namespace
+  labels:
+    app: front-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-web
+  template:
+    metadata:
+      labels:
+        app: front-web
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: front-web
+          # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
+          image: registry.c-mbk.fr/front-web:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
