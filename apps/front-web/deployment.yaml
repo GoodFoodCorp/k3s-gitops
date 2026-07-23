@@ -23,7 +23,7 @@ spec:
           image: registry.c-mbk.fr/front-web:v0.0.1
           imagePullPolicy: Always
           ports:
-            - containerPort: 80 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
+            - containerPort: 8080 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
           resources:
             requests:
               memory: "64Mi"
