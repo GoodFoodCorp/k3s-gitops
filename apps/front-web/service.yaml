@@ -10,4 +10,4 @@ spec:
   ports:
     - protocol: TCP
       port: 80 # Port exposé au sein du cluster
-      targetPort: 80 # Port d'écoute du conteneur Docker
+      targetPort: 8080 # Port d'écoute du conteneur Docker
