@@ -20,7 +20,7 @@ spec:
       containers:
         - name: front-web
           # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
-          image: registry.c-mbk.fr/front-web:latest
+          image: registry.c-mbk.fr/front-web:1a2e40559c05c8bfe4589ac835b4bd8acb3cadda
           imagePullPolicy: Always
           ports:
             - containerPort: 80 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
