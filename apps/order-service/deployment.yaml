@@ -20,7 +20,7 @@ spec:
       containers:
         - name: order-service
           # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
-          image: registry.c-mbk.fr/order-service:v0.0.59
+          image: registry.c-mbk.fr/order-service:v0.0.1
           imagePullPolicy: Always
           ports:
             - containerPort: 8082 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
