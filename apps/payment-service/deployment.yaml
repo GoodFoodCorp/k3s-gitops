@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service # Remplacez par le nom de votre microservice (ex: api-gateway, auth-service)
+  namespace: goodfood-dev # Remplacez par le nom de votre namespace
+  labels:
+    app: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      imagePullSecrets:
+        - name: registry-c-mbk-secret
+      containers:
+        - name: payment-service
+          # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
+          image: registry.c-mbk.fr/payment-service:v0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8086 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
