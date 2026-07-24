@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: front-web
+        app: auth-service
     spec:
       imagePullSecrets:
         - name: registry-c-mbk-secret
