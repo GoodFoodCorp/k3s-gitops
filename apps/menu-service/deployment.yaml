@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menu-service # Remplacez par le nom de votre microservice (ex: api-gateway, auth-service)
+  namespace: goodfood-dev # Remplacez par le nom de votre namespace
+  labels:
+    app: menu-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: menu-service
+  template:
+    metadata:
+      labels:
+        app: menu-service
+    spec:
+      imagePullSecrets:
+        - name: registry-c-mbk-secret
+      containers:
+        - name: menu-service
+          # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
+          image: registry.c-mbk.fr/menu-service:v0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8085 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"

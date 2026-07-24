@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: menu-service # Doit correspondre au nom du service
+  namespace: goodfood-dev # Même namespace que le deployment
+spec:
+  type: ClusterIP
+  selector:
+    app: menu-service # Doit matcher le label 'app' défini dans le deployment.yaml
+  ports:
+    - protocol: TCP
+      port: 80 # Port exposé au sein du cluster
+      targetPort: 8085 # Port d'écoute du conteneur Docker
