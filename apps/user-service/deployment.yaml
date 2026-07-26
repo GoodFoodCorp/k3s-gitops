@@ -21,6 +21,19 @@ spec:
         - name: user-service
           # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
           image: registry.c-mbk.fr/user-service:v0.0.1
+          env:
+        # Variable simple
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+
+        # Variable issue d'un Secret K8s (pour les données sensibles)
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: auth-db-secret # Nom du secret dans K8s
+              key: password # Clé dans le secret
           imagePullPolicy: Always
           ports:
             - containerPort: 8087 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)

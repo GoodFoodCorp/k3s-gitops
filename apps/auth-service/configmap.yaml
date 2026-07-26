@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8081"
+  ENV: "development"
+  POSTGRES_USER: "user"
+  POSTGRES_DB: "auth_db"
+  SMTP_HOST: "sandbox.smtp.mailtrap.io"
+  SMTP_PORT: "2525"
+  SMTP_SENDER: "no-reply@your-domain.com"
+  USER_SERVICE_URL: ""
+  FRONTEND_URL: ""
+  AUTO_VERIFY_EMAIL: "true"
