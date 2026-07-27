@@ -3,9 +3,8 @@ kind: Ingress
 metadata:
   name: api-gateway
   namespace: goodfood-dev
-  annotations:
-    kubernetes.io/ingress.class: traefik
 spec:
+  iningressClassName: traefik
   rules:
     - host: api.c-mbk.fr
       http:
