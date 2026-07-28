@@ -16,6 +16,18 @@ spec:
                 name: front-web
                 port:
                   number: 80
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway
+  namespace: goodfood-dev
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: goodfood-dev-api-cors@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
     - host: api.c-mbk.fr
       http:
         paths:
@@ -54,8 +66,6 @@ spec:
                 name: auth-service
                 port:
                   number: 80
-
-          # 2. Health check (Optionnel pour accès externe)
           - path: /health
             pathType: Prefix
             backend:
@@ -138,127 +148,6 @@ spec:
             backend:
               service:
                 name: delivery-service
-                port:
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: api-gateway
-  namespace: goodfood-dev
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: goodfood-dev-api-cors@kubernetescrd
-spec:
-  ingressClassName: traefik
-  rules:
-    - host: api.c-mbk.fr
-      http:
-        paths:
-          - path: /api/auth
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 80
-          - path: /api/user
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 80
-          - path: /api/admin
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 80
-          - path: /api-docs
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 80
-          - path: /scalar
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 80
-          # 2. Health check (Optionnel pour accès externe)
-          - path: /health
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 80
-          - path: /api/users
-            pathType: Prefix
-            backend:
-              service:
-                name: user-service
-                port:
-                  number: 80
-          - path: /api/restaurants
-            pathType: Prefix
-            backend:
-              service:
-                name: franchise-service
-                port:
-                  number: 80
-          - path: /api/franchise
-            pathType: Prefix
-            backend:
-              service:
-                name: franchise-service
-                port:
-                  number: 80
-          - path: /api/menu
-            pathType: Prefix
-            backend:
-              service:
-                name: menu-service
-                port:
-                  number: 80
-          - path: /api/orders
-            pathType: Prefix
-            backend:
-              service:
-                name: order-service
-                port:
-                  number: 80
-          - path: /api/payments
-            pathType: Prefix
-            backend:
-              service:
-                name: payment-service
-                port:
-                  number: 80
-          - path: /api/reservations
-            pathType: Prefix
-            backend:
-              service:
-                name: reservation-service
-                port:
-                  number: 80
-          - path: /api/deliveries
-            pathType: Prefix
-            backend:
-              service:
-                name: delivery-service
-                port:
-                  number: 80
-          - path: /api/stocks
-            pathType: Prefix
-            backend:
-              service:
-                name: stock-service
                 port:
                   number: 80
           - path: /api/replenishment-requests
