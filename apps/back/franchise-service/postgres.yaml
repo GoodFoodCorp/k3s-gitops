@@ -1,0 +1,61 @@
+# 1. PVC pour conserver les données de Postgres sur k3s
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: franchise-db-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi # Ajustez la taille selon vos besoins
+---
+# 2. Déploiement de PostgreSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: franchise-db
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: franchise-db
+  template:
+    metadata:
+      labels:
+        app: franchise-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            # Récupère POSTGRES_USER et POSTGRES_DB
+            - configMapRef:
+                name: franchise-service-config
+            # Récupère POSTGRES_PASSWORD
+            - secretRef:
+                name: franchise-service-secret
+          volumeMounts:
+            - name: franchise-db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: franchise-db-data
+          persistentVolumeClaim:
+            claimName: franchise-db-pvc
+---
+# 3. Service Kubernetes pour permettre à franchise-service de trouver franchise-db
+apiVersion: v1
+kind: Service
+metadata:
+  name: franchise-db # Ce nom permet de la contacter via "host=franchise-db"
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: franchise-db
+  ports:
+    - port: 5432
+      targetPort: 5432

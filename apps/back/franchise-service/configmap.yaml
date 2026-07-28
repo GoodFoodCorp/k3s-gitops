@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+  namespace: goodfood-dev
+data:
+  POSTGRES_USER: "franchise_user"
+  POSTGRES_DB: "franchise_db"
+  AUTH_SERVICE_URL: "http://auth-service:8081"
