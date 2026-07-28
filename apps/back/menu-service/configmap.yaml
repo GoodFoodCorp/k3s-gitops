@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: franchise-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8085"
+  LOG_LEVEL: "info"
+  POSTGRES_USER: "menu_user"
+  POSTGRES_DB: "menu_db"
+  FRANCHISE_SERVICE_URL: "http://api.c-mbk.fr/franchise"
