@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: franchise-service-config
+  name: menu-service-config
   namespace: goodfood-dev
 data:
   PORT: "8085"
