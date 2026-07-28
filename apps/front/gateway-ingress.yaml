@@ -6,6 +6,16 @@ metadata:
 spec:
   iningressClassName: traefik
   rules:
+    - host: app.c-mbk.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: front-web
+                port:
+                  number: 80
     - host: api.c-mbk.fr
       http:
         paths:
