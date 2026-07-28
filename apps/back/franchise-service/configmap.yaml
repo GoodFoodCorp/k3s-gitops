@@ -6,4 +6,4 @@ metadata:
 data:
   POSTGRES_USER: "franchise_user"
   POSTGRES_DB: "franchise_db"
-  AUTH_SERVICE_URL: "http://auth-service:8081"
+  AUTH_SERVICE_URL: "http://api.c-mbk.fr/api/auth"
