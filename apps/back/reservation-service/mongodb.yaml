@@ -1,0 +1,61 @@
+# 1. PVC pour conserver les données de MongoDB sur k3s
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: reservation-db-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# 2. Déploiement de MongoDB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation-db
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservation-db
+  template:
+    metadata:
+      labels:
+        app: reservation-db
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:4.4
+          ports:
+            - containerPort: 27017
+          envFrom:
+            # Récupère MONGO_INITDB_ROOT_USERNAME et MONGO_INITDB_DATABASE
+            - configMapRef:
+                name: reservation-service-config
+            # Récupère MONGO_INITDB_ROOT_PASSWORD
+            - secretRef:
+                name: reservation-service-secret
+          volumeMounts:
+            - name: reservation-db-data
+              mountPath: /data/db
+      volumes:
+        - name: reservation-db-data
+          persistentVolumeClaim:
+            claimName: reservation-db-pvc
+---
+# 3. Service Kubernetes pour permettre à reservation-service de trouver reservation-db
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservation-db
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: reservation-db
+  ports:
+    - port: 27017
+      targetPort: 27017

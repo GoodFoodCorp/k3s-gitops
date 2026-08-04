@@ -24,6 +24,11 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8088 # Le port sur lequel votre conteneur écoute (ex: 80, 3000, 8080)
+          envFrom:
+            - configMapRef:
+                name: reservation-service-config
+            - secretRef:
+                name: reservation-service-secret
           resources:
             requests:
               memory: "64Mi"

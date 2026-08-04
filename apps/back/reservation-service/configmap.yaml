@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reservation-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8088"
+  LOG_LEVEL: "info"
+  MONGO_USER: "reservation_user"
