@@ -1,0 +1,61 @@
+# 1. PVC pour conserver les données de MongoDB sur k3s
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: delivery-db-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# 2. Déploiement de MongoDB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery-db
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: delivery-db
+  template:
+    metadata:
+      labels:
+        app: delivery-db
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:7.0
+          ports:
+            - containerPort: 27017
+          envFrom:
+            # Récupère MONGO_INITDB_ROOT_USERNAME et MONGO_INITDB_DATABASE
+            - configMapRef:
+                name: delivery-service-config
+            # Récupère MONGO_INITDB_ROOT_PASSWORD
+            - secretRef:
+                name: delivery-service-secret
+          volumeMounts:
+            - name: delivery-db-data
+              mountPath: /data/db
+      volumes:
+        - name: delivery-db-data
+          persistentVolumeClaim:
+            claimName: delivery-db-pvc
+---
+# 3. Service Kubernetes pour permettre à delivery-service de trouver delivery-db
+apiVersion: v1
+kind: Service
+metadata:
+  name: delivery-db
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: delivery-db
+  ports:
+    - port: 27017
+      targetPort: 27017
