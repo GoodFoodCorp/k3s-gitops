@@ -1,0 +1,61 @@
+# 1. PVC pour conserver les données de Postgres sur k3s
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user-db-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi # Ajustez la taille selon vos besoins
+---
+# 2. Déploiement de PostgreSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-db
+  template:
+    metadata:
+      labels:
+        app: user-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            # Récupère POSTGRES_USER et POSTGRES_DB
+            - configMapRef:
+                name: user-service-config
+            # Récupère POSTGRES_PASSWORD
+            - secretRef:
+                name: user-service-secret
+          volumeMounts:
+            - name: user-db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: user-db-data
+          persistentVolumeClaim:
+            claimName: user-db-pvc
+---
+# 3. Service Kubernetes pour permettre à user-service de trouver user-db
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-db # Ce nom permet de la contacter via "host=user-db"
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: user-db
+  ports:
+    - port: 5432
+      targetPort: 5432

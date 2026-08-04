@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8087"
+  LOG_LEVEL: "info"
+  POSTGRES_USER: "user_user"
+  POSTGRES_DB: "user_db"
