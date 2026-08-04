@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8082"
+  LOG_LEVEL: "info"
+  POSTGRES_USER: "order_user"
+  POSTGRES_DB: "orders_db"
