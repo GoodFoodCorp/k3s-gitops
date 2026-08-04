@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stock-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8086"
+  LOG_LEVEL: "info"
+  POSTGRES_USER: "stock_user"
+  POSTGRES_DB: "stock_db"
