@@ -22,7 +22,7 @@ data:
             "auth-model": "native",
             "auth-properties": {
               "user": "auth_user",
-              "password": "votre_mot_de_passe"
+              "password": "votre_vrai_mot_de_passe"
             }
           }
         },
@@ -40,7 +40,7 @@ data:
             "auth-model": "native",
             "auth-properties": {
               "user": "menu_user",
-              "password": "votre_mot_de_passe"
+              "password": "votre_vrai_mot_de_passe"
             }
           }
         },
@@ -58,7 +58,7 @@ data:
             "auth-model": "native",
             "auth-properties": {
               "user": "order_user",
-              "password": "votre_mot_de_passe"
+              "password": "votre_vrai_mot_de_passe"
             }
           }
         },
@@ -76,7 +76,7 @@ data:
             "auth-model": "native",
             "auth-properties": {
               "user": "payment_user",
-              "password": "votre_mot_de_passe"
+              "password": "votre_vrai_mot_de_passe"
             }
           }
         },
@@ -94,7 +94,7 @@ data:
             "auth-model": "native",
             "auth-properties": {
               "user": "stock_user",
-              "password": "votre_mot_de_passe"
+              "password": "votre_vrai_mot_de_passe"
             }
           }
         },
@@ -112,7 +112,7 @@ data:
             "auth-model": "native",
             "auth-properties": {
               "user": "reservation_user",
-              "password": "votre_mot_de_passe"
+              "password": "votre_vrai_mot_de_passe"
             }
           }
         }
