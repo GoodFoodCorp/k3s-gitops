@@ -27,19 +27,27 @@ spec:
       labels:
         app: cloudbeaver
     spec:
+      # 1. L'initContainer prépare le dossier et copie le JSON avant que CloudBeaver ne démarre
+      initContainers:
+        - name: init-datasources
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /workspace/GlobalConfiguration/.dbeaver
+              cp /config/data-sources.json /workspace/GlobalConfiguration/.dbeaver/data-sources.json
+              chmod -R 777 /workspace/GlobalConfiguration
+          volumeMounts:
+            - name: cloudbeaver-data
+              mountPath: /workspace
+            - name: config-source
+              mountPath: /config
       containers:
         - name: cloudbeaver
           image: dbeaver/cloudbeaver:latest
           ports:
             - containerPort: 8978
-              name: http
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
           volumeMounts:
             - name: cloudbeaver-data
               mountPath: /opt/cloudbeaver/workspace
@@ -47,6 +55,9 @@ spec:
         - name: cloudbeaver-data
           persistentVolumeClaim:
             claimName: cloudbeaver-data-pvc
+        - name: config-source
+          configMap:
+            name: cloudbeaver-datasources
 ---
 # 3. Service interne
 apiVersion: v1
