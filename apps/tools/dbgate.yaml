@@ -20,9 +20,9 @@ spec:
             - containerPort: 3000
               name: http
           env:
-            # 1. Liste des connexions pré-configurées
+            # 1. Liste des 9 connexions bien déclarées
             - name: CONNECTIONS
-              value: "auth,menu,order,payment,stock,reservation"
+              value: "auth,delivery,franchise,menu,order,payment,reservation,stock,user"
 
             # --- AUTH DB (PostgreSQL) ---
             - name: LABEL_auth
@@ -34,13 +34,43 @@ spec:
             - name: PORT_auth
               value: "5432"
             - name: USER_auth
-              value: "user"
+              value: "auth_user"
             - name: DATABASE_auth
               value: "auth_db"
             - name: PASSWORD_auth
               valueFrom:
                 secretKeyRef:
                   name: auth-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- DELIVERY DB (MongoDB) ---
+            - name: LABEL_delivery
+              value: "Delivery DB (MongoDB)"
+            - name: ENGINE_delivery
+              value: "mongo@dbgate-plugin-mongo"
+            - name: URL_delivery
+              valueFrom:
+                secretKeyRef:
+                  name: delivery-service-secret
+                  key: MONGODB_URI
+
+            # --- FRANCHISE DB (PostgreSQL) ---
+            - name: LABEL_franchise
+              value: "Franchise DB (PostgreSQL)"
+            - name: ENGINE_franchise
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_franchise
+              value: "franchise-db"
+            - name: PORT_franchise
+              value: "5432"
+            - name: USER_franchise
+              value: "franchise_user"
+            - name: DATABASE_franchise
+              value: "franchise_db"
+            - name: PASSWORD_franchise
+              valueFrom:
+                secretKeyRef:
+                  name: franchise-service-secret
                   key: POSTGRES_PASSWORD
 
             # --- MENU DB (PostgreSQL) ---
@@ -100,6 +130,17 @@ spec:
                   name: payment-service-secret
                   key: POSTGRES_PASSWORD
 
+            # --- RESERVATION DB (MongoDB) ---
+            - name: LABEL_reservation
+              value: "Reservation DB (MongoDB)"
+            - name: ENGINE_reservation
+              value: "mongo@dbgate-plugin-mongo"
+            - name: URL_reservation
+              valueFrom:
+                secretKeyRef:
+                  name: reservation-service-secret
+                  key: MONGODB_URI
+
             # --- STOCK DB (PostgreSQL) ---
             - name: LABEL_stock
               value: "Stock DB (PostgreSQL)"
@@ -119,45 +160,7 @@ spec:
                   name: stock-service-secret
                   key: POSTGRES_PASSWORD
 
-            # --- delivery DB (MongoDB) ---
-            - name: LABEL_delivery
-              value: "Delivery DB (MongoDB)"
-            - name: ENGINE_delivery
-              value: "mongo@dbgate-plugin-mongo"
-            - name: SERVER_delivery
-              value: "delivery-db"
-            - name: PORT_delivery
-              value: "5432"
-            - name: USER_delivery
-              value: "delivery_user"
-            - name: DATABASE_delivery
-              value: "delivery_db"
-            - name: PASSWORD_delivery
-              valueFrom:
-                secretKeyRef:
-                  name: delivery-service-secret
-                  key: MONGODB_URI
-
-            # --- franchise DB (PostgreSQL) ---
-            - name: LABEL_franchise
-              value: "Franchise DB (PostgreSQL)"
-            - name: ENGINE_franchise
-              value: "postgres@dbgate-plugin-postgres"
-            - name: SERVER_franchise
-              value: "franchise-db"
-            - name: PORT_franchise
-              value: "5432"
-            - name: USER_franchise
-              value: "franchise_user"
-            - name: DATABASE_franchise
-              value: "franchise_db"
-            - name: PASSWORD_franchise
-              valueFrom:
-                secretKeyRef:
-                  name: franchise-service-secret
-                  key: POSTGRES_PASSWORD
-
-            # --- user DB (PostgreSQL) ---
+            # --- USER DB (PostgreSQL) ---
             - name: LABEL_user
               value: "User DB (PostgreSQL)"
             - name: ENGINE_user
@@ -175,17 +178,6 @@ spec:
                 secretKeyRef:
                   name: user-service-secret
                   key: POSTGRES_PASSWORD
-
-            # --- RESERVATION DB (MongoDB) ---
-            - name: LABEL_reservation
-              value: "Reservation DB (MongoDB)"
-            - name: ENGINE_reservation
-              value: "mongo@dbgate-plugin-mongo"
-            - name: URL_reservation
-              valueFrom:
-                secretKeyRef:
-                  name: reservation-service-secret
-                  key: MONGODB_URI
 
           resources:
             requests:
