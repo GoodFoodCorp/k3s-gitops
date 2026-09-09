@@ -119,6 +119,63 @@ spec:
                   name: stock-service-secret
                   key: POSTGRES_PASSWORD
 
+            # --- delivery DB (MongoDB) ---
+            - name: LABEL_delivery
+              value: "Delivery DB (MongoDB)"
+            - name: ENGINE_delivery
+              value: "mongo@dbgate-plugin-mongo"
+            - name: SERVER_delivery
+              value: "delivery-db"
+            - name: PORT_delivery
+              value: "5432"
+            - name: USER_delivery
+              value: "delivery_user"
+            - name: DATABASE_delivery
+              value: "delivery_db"
+            - name: PASSWORD_delivery
+              valueFrom:
+                secretKeyRef:
+                  name: delivery-service-secret
+                  key: MONGODB_URI
+
+            # --- franchise DB (PostgreSQL) ---
+            - name: LABEL_franchise
+              value: "Franchise DB (PostgreSQL)"
+            - name: ENGINE_franchise
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_franchise
+              value: "franchise-db"
+            - name: PORT_franchise
+              value: "5432"
+            - name: USER_franchise
+              value: "franchise_user"
+            - name: DATABASE_franchise
+              value: "franchise_db"
+            - name: PASSWORD_franchise
+              valueFrom:
+                secretKeyRef:
+                  name: franchise-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- user DB (PostgreSQL) ---
+            - name: LABEL_user
+              value: "User DB (PostgreSQL)"
+            - name: ENGINE_user
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_user
+              value: "user-db"
+            - name: PORT_user
+              value: "5432"
+            - name: USER_user
+              value: "user_user"
+            - name: DATABASE_user
+              value: "user_db"
+            - name: PASSWORD_user
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-secret
+                  key: POSTGRES_PASSWORD
+
             # --- RESERVATION DB (MongoDB) ---
             - name: LABEL_reservation
               value: "Reservation DB (MongoDB)"
