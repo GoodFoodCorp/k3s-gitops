@@ -52,7 +52,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: delivery-service-secret
-                  key: MONGODB_URI
+                  key: MONGODB__URI
 
             # --- FRANCHISE DB (PostgreSQL) ---
             - name: LABEL_franchise
