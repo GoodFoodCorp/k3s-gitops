@@ -1,0 +1,173 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbgate
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbgate
+  template:
+    metadata:
+      labels:
+        app: dbgate
+    spec:
+      containers:
+        - name: dbgate
+          image: dbgate/dbgate:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            # 1. Liste des connexions pré-configurées
+            - name: CONNECTIONS
+              value: "auth,menu,order,payment,stock,reservation"
+
+            # --- AUTH DB (PostgreSQL) ---
+            - name: LABEL_auth
+              value: "Auth DB (PostgreSQL)"
+            - name: ENGINE_auth
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_auth
+              value: "auth-db"
+            - name: PORT_auth
+              value: "5432"
+            - name: USER_auth
+              value: "user"
+            - name: DATABASE_auth
+              value: "auth_db"
+            - name: PASSWORD_auth
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- MENU DB (PostgreSQL) ---
+            - name: LABEL_menu
+              value: "Menu DB (PostgreSQL)"
+            - name: ENGINE_menu
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_menu
+              value: "menu-db"
+            - name: PORT_menu
+              value: "5432"
+            - name: USER_menu
+              value: "menu_user"
+            - name: DATABASE_menu
+              value: "menu_db"
+            - name: PASSWORD_menu
+              valueFrom:
+                secretKeyRef:
+                  name: menu-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- ORDER DB (PostgreSQL) ---
+            - name: LABEL_order
+              value: "Order DB (PostgreSQL)"
+            - name: ENGINE_order
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_order
+              value: "order-db"
+            - name: PORT_order
+              value: "5432"
+            - name: USER_order
+              value: "order_user"
+            - name: DATABASE_order
+              value: "orders_db"
+            - name: PASSWORD_order
+              valueFrom:
+                secretKeyRef:
+                  name: order-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- PAYMENT DB (PostgreSQL) ---
+            - name: LABEL_payment
+              value: "Payment DB (PostgreSQL)"
+            - name: ENGINE_payment
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_payment
+              value: "payment-db"
+            - name: PORT_payment
+              value: "5432"
+            - name: USER_payment
+              value: "payment_user"
+            - name: DATABASE_payment
+              value: "payment_db"
+            - name: PASSWORD_payment
+              valueFrom:
+                secretKeyRef:
+                  name: payment-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- STOCK DB (PostgreSQL) ---
+            - name: LABEL_stock
+              value: "Stock DB (PostgreSQL)"
+            - name: ENGINE_stock
+              value: "postgres@dbgate-plugin-postgres"
+            - name: SERVER_stock
+              value: "stock-db"
+            - name: PORT_stock
+              value: "5432"
+            - name: USER_stock
+              value: "stock_user"
+            - name: DATABASE_stock
+              value: "stock_db"
+            - name: PASSWORD_stock
+              valueFrom:
+                secretKeyRef:
+                  name: stock-service-secret
+                  key: POSTGRES_PASSWORD
+
+            # --- RESERVATION DB (MongoDB) ---
+            - name: LABEL_reservation
+              value: "Reservation DB (MongoDB)"
+            - name: ENGINE_reservation
+              value: "mongo@dbgate-plugin-mongo"
+            - name: URL_reservation
+              valueFrom:
+                secretKeyRef:
+                  name: reservation-service-secret
+                  key: MONGODB_URI
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbgate
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: dbgate
+  ports:
+    - port: 80
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dbgate-ingress
+  namespace: goodfood-dev
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: db.c-mbk.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dbgate
+                port:
+                  number: 80
