@@ -21,7 +21,7 @@ data:
             "configurationType": "MANUAL",
             "auth-model": "native",
             "auth-properties": {
-              "user": "auth_user",
+              "user": "user",
               "password": "votre_vrai_mot_de_passe"
             }
           }
