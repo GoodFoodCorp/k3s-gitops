@@ -34,7 +34,7 @@ spec:
             - name: PORT_auth
               value: "5432"
             - name: USER_auth
-              value: "auth_user"
+              value: "user"
             - name: DATABASE_auth
               value: "auth_db"
             - name: PASSWORD_auth
