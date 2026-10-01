@@ -17,7 +17,6 @@ spec:
                 port:
                   number: 80
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -129,6 +128,27 @@ spec:
                 name: delivery-service
                 port:
                   number: 80
+          - path: /api/analytics
+            pathType: Prefix
+            backend:
+              service:
+                name: analytics-service
+                port:
+                  number: 80
+          - path: /api/promos
+            pathType: Prefix
+            backend:
+              service:
+                name: promo-service
+                port:
+                  number: 80
+          - path: /api/chat
+            pathType: Prefix
+            backend:
+              service:
+                name: assistant-service
+                port:
+                  number: 80
           - path: /api/stocks
             pathType: Prefix
             backend:
@@ -149,19 +169,4 @@ spec:
               service:
                 name: delivery-service
                 port:
-                  number: 80
-          - path: /api/replenishment-requests
-            pathType: Prefix
-            backend:
-              service:
-                name: stock-service
-                port:
-                  number: 80
-          - path: /socket.io
-            pathType: Prefix
-            backend:
-              service:
-                name: delivery-service
-                port:
-                  number: 80
                   number: 80
