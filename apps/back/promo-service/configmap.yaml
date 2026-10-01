@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promo-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8092"
+  LOG_LEVEL: "info"
+  POSTGRES_USER: "promo_user"
+  POSTGRES_DB: "promo_db"

@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: promo-db-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: promo-db
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: promo-db
+  template:
+    metadata:
+      labels:
+        app: promo-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: promo-service-config
+            - secretRef:
+                name: promo-service-secret
+          volumeMounts:
+            - name: promo-db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: promo-db-data
+          persistentVolumeClaim:
+            claimName: promo-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: promo-db
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: promo-db
+  ports:
+    - port: 5432
+      targetPort: 5432

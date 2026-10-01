@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assistant-service
+  namespace: goodfood-dev
+  labels:
+    app: assistant-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: assistant-service
+  template:
+    metadata:
+      labels:
+        app: assistant-service
+    spec:
+      imagePullSecrets:
+        - name: registry-c-mbk-secret
+      containers:
+        - name: assistant-service
+          image: registry.c-mbk.fr/assistant-service:v0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8093
+          envFrom:
+            - configMapRef:
+                name: assistant-service-config
+            - secretRef:
+                name: assistant-service-secret
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"

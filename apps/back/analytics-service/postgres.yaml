@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: analytics-db-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-db
+  namespace: goodfood-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-db
+  template:
+    metadata:
+      labels:
+        app: analytics-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: analytics-service-config
+            - secretRef:
+                name: analytics-service-secret
+          volumeMounts:
+            - name: analytics-db-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: analytics-db-data
+          persistentVolumeClaim:
+            claimName: analytics-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytics-db
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: analytics-db
+  ports:
+    - port: 5432
+      targetPort: 5432

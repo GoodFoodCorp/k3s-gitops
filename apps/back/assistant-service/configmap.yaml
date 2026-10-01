@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: assistant-service-config
+  namespace: goodfood-dev
+data:
+  PORT: "8093"
+  LOG_LEVEL: "info"
+  AI_BASE_URL: ""
+  AI_MODEL: "gpt-4o-mini"
+  ORDER_SERVICE_URL: "http://order-service:80"
+  MENU_SERVICE_URL: "http://menu-service:80"
+  PAYMENT_SERVICE_URL: "http://payment-service:80"
+  USER_SERVICE_URL: "http://user-service:80"
