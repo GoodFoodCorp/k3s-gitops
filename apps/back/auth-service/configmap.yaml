@@ -12,5 +12,6 @@ data:
   SMTP_PORT: "2525"
   SMTP_SENDER: "no-reply@your-domain.com"
   USER_SERVICE_URL: ""
-  FRONTEND_URL: ""
+  FRONTEND_URL: "https://app.c-mbk.fr"
+  OAUTH_REDIRECT_BASE_URL: "https://app.c-mbk.fr"
   AUTO_VERIFY_EMAIL: "true"
