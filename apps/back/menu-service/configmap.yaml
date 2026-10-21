@@ -8,4 +8,4 @@ data:
   LOG_LEVEL: "info"
   POSTGRES_USER: "menu_user"
   POSTGRES_DB: "menu_db"
-  FRANCHISE_SERVICE_URL: "http://api.c-mbk.fr/franchise"
+  FRANCHISE_SERVICE_URL: "http://franchise-service:80"
