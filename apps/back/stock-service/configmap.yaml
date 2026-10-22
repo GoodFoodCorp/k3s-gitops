@@ -8,3 +8,4 @@ data:
   LOG_LEVEL: "info"
   POSTGRES_USER: "stock_user"
   POSTGRES_DB: "stock_db"
+  MENU_SERVICE_URL: "http://menu-service:80"
