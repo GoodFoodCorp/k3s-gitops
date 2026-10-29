@@ -1,0 +1,55 @@
+# Shared in-memory state of the replicated services:
+#  - db 0: auth-service login rate limit counters (shared by every replica)
+#  - db 1: delivery-service Socket.IO adapter (rooms span every replica)
+# Nothing here must survive a restart, so no persistence.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: goodfood-dev
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.4-alpine
+          args: ["--save", "", "--appendonly", "no", "--maxmemory", "200mb", "--maxmemory-policy", "allkeys-lru"]
+          ports:
+            - containerPort: 6379
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: goodfood-dev
+spec:
+  type: ClusterIP
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379

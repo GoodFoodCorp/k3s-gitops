@@ -12,3 +12,5 @@ data:
   MENU_SERVICE_URL: "http://menu-service:80"
   PAYMENT_SERVICE_URL: "http://payment-service:80"
   USER_SERVICE_URL: "http://user-service:80"
+  JWT_ISSUER: "goodfood-auth"
+  JWT_AUDIENCE: "goodfood-api"

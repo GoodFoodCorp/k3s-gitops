@@ -8,3 +8,5 @@ data:
   LOG_LEVEL: "info"
   POSTGRES_USER: "promo_user"
   POSTGRES_DB: "promo_db"
+  JWT_ISSUER: "goodfood-auth"
+  JWT_AUDIENCE: "goodfood-api"

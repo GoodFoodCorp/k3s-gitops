@@ -30,8 +30,28 @@ spec:
                 name: assistant-service-secret
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "50m"
+              memory: "128Mi"
+              cpu: "100m"
             limits:
-              memory: "256Mi"
-              cpu: "200m"
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8093
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8093
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8093
+            periodSeconds: 5
+            failureThreshold: 30

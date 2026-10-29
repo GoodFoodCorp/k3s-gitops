@@ -65,6 +65,20 @@ spec:
                 name: menu-service
                 port:
                   number: 80
+          - path: /api/menu-categories
+            pathType: Prefix
+            backend:
+              service:
+                name: menu-service
+                port:
+                  number: 80
+          - path: /api/menu-plans
+            pathType: Prefix
+            backend:
+              service:
+                name: menu-service
+                port:
+                  number: 80
           - path: /api/orders
             pathType: Prefix
             backend:
@@ -115,6 +129,13 @@ spec:
                 port:
                   number: 80
           - path: /tracking
+            pathType: Prefix
+            backend:
+              service:
+                name: delivery-service
+                port:
+                  number: 80
+          - path: /socket.io
             pathType: Prefix
             backend:
               service:
@@ -220,6 +241,20 @@ spec:
                 port:
                   number: 80
           - path: /api/menu
+            pathType: Prefix
+            backend:
+              service:
+                name: menu-service
+                port:
+                  number: 80
+          - path: /api/menu-categories
+            pathType: Prefix
+            backend:
+              service:
+                name: menu-service
+                port:
+                  number: 80
+          - path: /api/menu-plans
             pathType: Prefix
             backend:
               service:
