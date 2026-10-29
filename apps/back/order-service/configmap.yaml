@@ -10,3 +10,8 @@ data:
   POSTGRES_DB: "orders_db"
   STOCK_SERVICE_URL: "http://stock-service:80"
   MENU_SERVICE_URL: "http://menu-service:80"
+  JWT_ISSUER: "goodfood-auth"
+  JWT_AUDIENCE: "goodfood-api"
+  PAYMENT_SERVICE_URL: "http://payment-service:80"
+  PROMO_SERVICE_URL: "http://promo-service:80"
+  FRANCHISE_SERVICE_URL: "http://franchise-service:80"

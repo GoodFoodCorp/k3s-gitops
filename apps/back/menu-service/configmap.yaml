@@ -9,3 +9,5 @@ data:
   POSTGRES_USER: "menu_user"
   POSTGRES_DB: "menu_db"
   FRANCHISE_SERVICE_URL: "http://franchise-service:80"
+  JWT_ISSUER: "goodfood-auth"
+  JWT_AUDIENCE: "goodfood-api"

@@ -1,0 +1,35 @@
+# Scales franchise-service on CPU between 2 and 10 replicas (requests must be set).
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: franchise-service
+  namespace: goodfood-dev
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: franchise-service
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+---
+# Keeps at least one replica up during node drains and rolling upgrades.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: franchise-service
+  namespace: goodfood-dev
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: franchise-service

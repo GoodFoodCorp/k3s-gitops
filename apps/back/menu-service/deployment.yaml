@@ -6,7 +6,7 @@ metadata:
   labels:
     app: menu-service
 spec:
-  replicas: 1
+  # Replicas are managed by the HorizontalPodAutoscaler (hpa.yaml).
   selector:
     matchLabels:
       app: menu-service
@@ -15,6 +15,17 @@ spec:
       labels:
         app: menu-service
     spec:
+      # Spread replicas over nodes: losing one node never takes the service down.
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: menu-service
+      terminationGracePeriodSeconds: 30
       imagePullSecrets:
         - name: registry-c-mbk-secret
       containers:
@@ -31,8 +42,28 @@ spec:
                 name: menu-service-secret
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "50m"
+              memory: "128Mi"
+              cpu: "100m"
             limits:
-              memory: "256Mi"
-              cpu: "200m"
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8085
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8085
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8085
+            periodSeconds: 5
+            failureThreshold: 30

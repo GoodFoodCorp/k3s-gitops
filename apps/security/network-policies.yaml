@@ -1,0 +1,176 @@
+# Network isolation of the goodfood-dev namespace (enforced by k3s'
+# built-in network policy controller).
+#
+#  1. Nothing reaches a pod unless a policy below allows it.
+#  2. The ingress controller (Traefik, kube-system) reaches the services.
+#  3. Services and shared infrastructure (RabbitMQ, Redis) talk to each other
+#     inside the namespace — /internal routes still require X-Service-Key.
+#  4. Each database is reachable only from its own service (and the DB
+#     admin tools), so a compromised service cannot read another's data.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: goodfood-dev
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress"]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-ingress-controller
+  namespace: goodfood-dev
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: NotIn
+        values: [auth-db, user-db, franchise-db, menu-db, order-db, payment-db, promo-db, stock-db, analytics-db, delivery-db, reservation-db, redis, rabbitmq]
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-between-services
+  namespace: goodfood-dev
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: NotIn
+        values: [auth-db, user-db, franchise-db, menu-db, order-db, payment-db, promo-db, stock-db, analytics-db, delivery-db, reservation-db]
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: auth-db-owner-only
+  namespace: goodfood-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: auth-db
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: auth-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: user-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: user-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: user-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: franchise-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: franchise-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: franchise-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: menu-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: menu-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: menu-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: order-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: order-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: order-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: payment-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: payment-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: payment-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: promo-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: promo-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: promo-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: stock-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: stock-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: stock-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: analytics-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: analytics-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: analytics-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: delivery-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: delivery-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: delivery-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: reservation-db-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: reservation-db } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: reservation-service } }
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
