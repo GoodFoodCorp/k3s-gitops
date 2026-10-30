@@ -19,5 +19,7 @@ spec:
       - Content-Type
       - Authorization
       - X-Request-Id
+      # Sent by the checkout so a retried order is never placed twice.
+      - Idempotency-Key
     accessControlAllowCredentials: true
     accessControlMaxAge: 86400
