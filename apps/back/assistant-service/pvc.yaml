@@ -1,0 +1,13 @@
+# The AI provider, model and key an admin picks in the back-office: kept
+# across restarts and image updates.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: assistant-data-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Mi
