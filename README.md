@@ -86,5 +86,9 @@ Webhook Stripe à déclarer : `https://api.c-mbk.fr/api/payments/webhooks/stripe
 - **MongoDB 4.4** n'est plus maintenu : monter de version par étapes
   (4.4 → 5.0 → 6.0 → 7.0), une version majeure à la fois.
 - **RabbitMQ** en cluster (quorum queues) via l'operator RabbitMQ.
+- **Géocodage et autocomplétion d'adresses** (UE) : les instances publiques
+  Nominatim (1 requête/s) et Photon conviennent au lancement ; au-delà, les
+  héberger dans le cluster et pointer `GEOCODER_URL` / `ADDRESS_SUGGEST_URL`
+  dessus (les réponses sont déjà mises en cache par franchise-service).
 - **Observabilité** : order-service expose `/metrics` (Prometheus) ;
   ajouter un `ServiceMonitor` et étendre aux autres services.
