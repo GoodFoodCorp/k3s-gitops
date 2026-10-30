@@ -10,3 +10,8 @@ data:
   JWT_ISSUER: "goodfood-auth"
   JWT_AUDIENCE: "goodfood-api"
   GEOCODER_URL: "https://nominatim.openstreetmap.org/"
+  # Addresses geocoded and suggested: the 27 EU member states (empty = all of them).
+  GEOCODER_COUNTRIES: ""
+  # Address autocomplete. The public Photon suits a launch; at thousands of
+  # customers, self-host Photon (and Nominatim) and point these URLs at it.
+  ADDRESS_SUGGEST_URL: "https://photon.komoot.io/"
