@@ -10,6 +10,7 @@ de chaque service met à jour la ligne `image:` de son `deployment.yaml`.
 | `apps/back/<service>/` | `deployment.yaml`, `service.yaml`, `configmap.yaml`, base de données, `hpa.yaml` (HPA + PDB) |
 | `apps/back/rabbitmq/` | Broker d'événements (`goodfood.events`) |
 | `apps/back/redis/` | État partagé entre réplicas : rate limit d'auth (db 0), Socket.IO de delivery (db 1) |
+| `apps/back/minio/` | Stockage objet des avatars (bucket `avatars`, servi par l'ingress sur `/avatars`) |
 | `apps/front/` | Front web, ingress `app.c-mbk.fr` / `api.c-mbk.fr`, middleware CORS |
 | `apps/security/` | NetworkPolicies |
 | `apps/tools/` | Outils d'administration des bases |
@@ -43,12 +44,13 @@ parlent entre eux (les routes `/internal` exigent en plus `X-Service-Key`) ;
 
 | Secret | Clés |
 |---|---|
-| `auth-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET` (≥ 32 octets), `JWT_REFRESH_SECRET`, `SERVICE_API_KEY`, `SMTP_*`, OAuth |
+| `auth-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET` (≥ 32 octets), `JWT_REFRESH_SECRET`, `SERVICE_API_KEY`, `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` (fournisseur réel : Brevo, Mailjet, SES…), `ADMIN_EMAIL` / `ADMIN_PASSWORD` (premier admin du siège), OAuth |
 | `order-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `SERVICE_API_KEY`, `RABBITMQ_URL` |
 | `payment-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `SERVICE_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RABBITMQ_URL` |
 | `promo-service-secret`, `menu-service-secret`, `stock-service-secret`, `franchise-service-secret` | base, `JWT_SECRET`, `SERVICE_API_KEY` |
 | `delivery-service-secret` | `MONGODB_URI`, `JWT_SECRET`, `SERVICE_API_KEY`, `RABBITMQ_URL`, `IBAN_ENCRYPTION_KEY` (32 octets base64) |
-| `user-service-secret` | base, `JWT_SECRET`, `SERVICE_API_KEY`, `S3_*` (obligatoire si `ENV=production`) |
+| `user-service-secret` | base, `JWT_SECRET`, `SERVICE_API_KEY`, `S3_ACCESS_KEY` / `S3_SECRET_KEY` (= identifiants MinIO) |
+| `minio-secret` | `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` (≥ 8 caractères) |
 | `reservation-service-secret`, `analytics-service-secret`, `assistant-service-secret` | base, `JWT_SECRET` |
 
 `SERVICE_API_KEY` doit être **identique** dans tous les services qui
@@ -62,7 +64,11 @@ Webhook Stripe à déclarer : `https://api.c-mbk.fr/api/payments/webhooks/stripe
 
 ## Ordre de déploiement de la release 1.0.0
 
-1. Secrets complétés (ci-dessus), Redis.
+1. Secrets complétés (ci-dessus), Redis, MinIO (le Job `minio-init` crée le
+   bucket). Les services tournent en `ENV=production` : payment-service
+   refuse de démarrer sans clés Stripe, user-service sans stockage objet,
+   et auth-service ne crée plus les comptes de démonstration (seul le premier
+   admin, depuis `ADMIN_EMAIL` / `ADMIN_PASSWORD`).
 2. **auth-service** en premier : les autres services exigent désormais des
    access tokens typés (`typ`, `iss`, `aud`) ; les jetons émis avant expirent
    en 15 minutes et les utilisateurs se reconnectent une fois.

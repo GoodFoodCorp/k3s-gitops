@@ -1,0 +1,117 @@
+# Object storage of the user avatars. The user-service replicas share it
+# (a pod disk is neither shared nor kept); the "avatars" bucket is readable
+# anonymously (GET of one object only, no listing) and served by the ingress
+# at https://app.c-mbk.fr/avatars/<key>.
+# Credentials: secret minio-secret (MINIO_ROOT_USER, MINIO_ROOT_PASSWORD).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: goodfood-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: goodfood-dev
+  labels:
+    app: minio
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # one writer on the ReadWriteOnce volume
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+          args: ["server", "/data"]
+          ports:
+            - containerPort: 9000
+          envFrom:
+            - secretRef:
+                name: minio-secret
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: goodfood-dev
+spec:
+  selector:
+    app: minio
+  ports:
+    - port: 9000
+      targetPort: 9000
+---
+# Creates the bucket and its anonymous read policy. Idempotent: safe to run
+# again (delete the Job to re-run it).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-init
+  namespace: goodfood-dev
+spec:
+  backoffLimit: 10
+  template:
+    metadata:
+      labels:
+        app: minio-init
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mc
+          image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+          envFrom:
+            - secretRef:
+                name: minio-secret
+          command:
+            - /bin/sh
+            - -c
+            - >
+              mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" &&
+              mc mb --ignore-existing local/avatars &&
+              mc anonymous set download local/avatars
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

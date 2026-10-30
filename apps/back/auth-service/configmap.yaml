@@ -5,17 +5,18 @@ metadata:
   namespace: goodfood-dev
 data:
   PORT: "8081"
-  ENV: "development"
+  ENV: "production"
   POSTGRES_USER: "user"
   POSTGRES_DB: "auth_db"
-  SMTP_HOST: "sandbox.smtp.mailtrap.io"
-  SMTP_PORT: "2525"
-  SMTP_SENDER: "no-reply@your-domain.com"
+  # SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASSWORD: auth-service-secret
+  # (a real provider: the confirmation and reset emails reach the customers).
+  SMTP_SENDER: "no-reply@c-mbk.fr"
   USER_SERVICE_URL: "http://user-service:80"
   FRONTEND_URL: "https://app.c-mbk.fr"
   OAUTH_REDIRECT_BASE_URL: "https://app.c-mbk.fr"
   FRANCHISE_SERVICE_URL: "http://franchise-service:80"
-  AUTO_VERIFY_EMAIL: "true"
+  # Customers confirm their email before their first sign-in.
+  AUTO_VERIFY_EMAIL: "false"
   JWT_ISSUER: "goodfood-auth"
   JWT_AUDIENCE: "goodfood-api"
   REDIS_URL: "redis://redis:6379/0"
