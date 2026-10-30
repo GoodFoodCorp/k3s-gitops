@@ -26,7 +26,7 @@ spec:
     matchExpressions:
       - key: app
         operator: NotIn
-        values: [auth-db, user-db, franchise-db, menu-db, order-db, payment-db, promo-db, stock-db, analytics-db, delivery-db, reservation-db, redis, rabbitmq]
+        values: [auth-db, user-db, franchise-db, menu-db, order-db, payment-db, promo-db, stock-db, analytics-db, delivery-db, reservation-db, redis, rabbitmq, minio]
   policyTypes: ["Ingress"]
   ingress:
     - from:
@@ -44,7 +44,7 @@ spec:
     matchExpressions:
       - key: app
         operator: NotIn
-        values: [auth-db, user-db, franchise-db, menu-db, order-db, payment-db, promo-db, stock-db, analytics-db, delivery-db, reservation-db]
+        values: [auth-db, user-db, franchise-db, menu-db, order-db, payment-db, promo-db, stock-db, analytics-db, delivery-db, reservation-db, minio]
   policyTypes: ["Ingress"]
   ingress:
     - from:
@@ -174,3 +174,18 @@ spec:
     - from:
         - podSelector: { matchLabels: { app: reservation-service } }
         - podSelector: { matchExpressions: [{ key: app, operator: In, values: [cloudbeaver, dbgate] }] }
+---
+# Avatars: written by user-service (and the bucket job), read through the
+# ingress controller.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: minio-owner-only, namespace: goodfood-dev }
+spec:
+  podSelector: { matchLabels: { app: minio } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchExpressions: [{ key: app, operator: In, values: [user-service, minio-init] }] }
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system

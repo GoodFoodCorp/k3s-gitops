@@ -12,3 +12,4 @@ data:
   JWT_ISSUER: "goodfood-auth"
   JWT_AUDIENCE: "goodfood-api"
   FRANCHISE_SERVICE_URL: "http://franchise-service:80"
+  NODE_ENV: "production"

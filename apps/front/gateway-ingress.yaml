@@ -128,6 +128,15 @@ spec:
                 name: stock-service
                 port:
                   number: 80
+          # User avatars, read straight from the public MinIO bucket
+          # (path-style: /avatars/<key> is bucket "avatars", object <key>).
+          - path: /avatars
+            pathType: Prefix
+            backend:
+              service:
+                name: minio
+                port:
+                  number: 9000
           - path: /tracking
             pathType: Prefix
             backend:

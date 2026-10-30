@@ -10,4 +10,6 @@ data:
   POSTGRES_DB: "payment_db"
   JWT_ISSUER: "goodfood-auth"
   JWT_AUDIENCE: "goodfood-api"
-  ENV: "development"
+  # Refuses the fake gateway: STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET
+  # are required in payment-service-secret.
+  ENV: "production"
