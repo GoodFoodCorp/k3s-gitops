@@ -7,6 +7,9 @@ metadata:
     app: assistant-service
 spec:
   replicas: 1
+  # The settings volume is ReadWriteOnce: the old pod lets it go first.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: assistant-service
@@ -17,12 +20,21 @@ spec:
     spec:
       imagePullSecrets:
         - name: registry-c-mbk-secret
+      securityContext:
+        fsGroup: 65532
+      volumes:
+        - name: assistant-data
+          persistentVolumeClaim:
+            claimName: assistant-data-pvc
       containers:
         - name: assistant-service
           image: registry.c-mbk.fr/assistant-service:v0.0.5
           imagePullPolicy: Always
           ports:
             - containerPort: 8093
+          volumeMounts:
+            - name: assistant-data
+              mountPath: /data
           envFrom:
             - configMapRef:
                 name: assistant-service-config
