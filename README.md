@@ -51,7 +51,8 @@ parlent entre eux (les routes `/internal` exigent en plus `X-Service-Key`) ;
 | `delivery-service-secret` | `MONGODB_URI`, `JWT_SECRET`, `SERVICE_API_KEY`, `RABBITMQ_URL`, `IBAN_ENCRYPTION_KEY` (32 octets base64) |
 | `user-service-secret` | base, `JWT_SECRET`, `SERVICE_API_KEY`, `S3_ACCESS_KEY` / `S3_SECRET_KEY` (= identifiants MinIO) |
 | `minio-secret` | `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` (≥ 8 caractères) |
-| `reservation-service-secret`, `analytics-service-secret`, `assistant-service-secret` | base, `JWT_SECRET` |
+| `reservation-service-secret`, `assistant-service-secret` | base, `JWT_SECRET` |
+| `analytics-service-secret` | base, `JWT_SECRET`, `SERVICE_API_KEY` (le même qu'order-service : les tableaux de bord lisent les ventes par son API interne, le siège n'a aucun accès aux commandes) |
 
 `SERVICE_API_KEY` doit être **identique** dans tous les services qui
 s'appellent par `/internal` ; `JWT_SECRET` identique partout ;
