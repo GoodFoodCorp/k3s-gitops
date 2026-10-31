@@ -17,3 +17,8 @@ data:
   NODE_ENV: "production"
   RECONCILE_INTERVAL_MS: "60000"
   PUSH_RADIUS_KM: "8"
+  # Road routes for live tracking (OSRM format). The public FOSSGIS servers
+  # are for demos: at volume, run OSRM in the cluster and point these at it.
+  ROUTING_BIKE_URL: "https://routing.openstreetmap.de/routed-bike"
+  ROUTING_CAR_URL: "https://routing.openstreetmap.de/routed-car"
+  MAX_ACTIVE_DELIVERIES: "2"

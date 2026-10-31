@@ -114,6 +114,13 @@ spec:
                 name: delivery-service
                 port:
                   number: 80
+          - path: /api/notifications
+            pathType: Prefix
+            backend:
+              service:
+                name: delivery-service
+                port:
+                  number: 80
           - path: /api/stocks
             pathType: Prefix
             backend:
@@ -299,6 +306,13 @@ spec:
                 port:
                   number: 80
           - path: /api/courier-profile
+            pathType: Prefix
+            backend:
+              service:
+                name: delivery-service
+                port:
+                  number: 80
+          - path: /api/notifications
             pathType: Prefix
             backend:
               service:
