@@ -45,7 +45,7 @@ parlent entre eux (les routes `/internal` exigent en plus `X-Service-Key`) ;
 | Secret | Clés |
 |---|---|
 | `auth-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET` (≥ 32 octets), `JWT_REFRESH_SECRET`, `SERVICE_API_KEY`, `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` (fournisseur réel : Brevo, Mailjet, SES…), `ADMIN_EMAIL` / `ADMIN_PASSWORD` (premier admin du siège), OAuth |
-| `order-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `SERVICE_API_KEY`, `RABBITMQ_URL` |
+| `order-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `SERVICE_API_KEY`, `RABBITMQ_URL`, `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` (factures par email, même fournisseur qu'auth-service) |
 | `payment-service-secret` | `DATABASE_URL`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `SERVICE_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RABBITMQ_URL` |
 | `promo-service-secret`, `menu-service-secret`, `stock-service-secret`, `franchise-service-secret` | base, `JWT_SECRET`, `SERVICE_API_KEY` |
 | `delivery-service-secret` | `MONGODB_URI`, `JWT_SECRET`, `SERVICE_API_KEY`, `RABBITMQ_URL`, `IBAN_ENCRYPTION_KEY` (32 octets base64) |
