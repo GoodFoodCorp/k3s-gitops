@@ -22,3 +22,6 @@ data:
   ROUTING_BIKE_URL: "https://routing.openstreetmap.de/routed-bike"
   ROUTING_CAR_URL: "https://routing.openstreetmap.de/routed-car"
   MAX_ACTIVE_DELIVERIES: "2"
+  # Pages of another site that may use the session (the app itself is on
+  # the same origin through the ingress; api.c-mbk.fr is called from it).
+  ALLOWED_ORIGINS: "https://app.c-mbk.fr"
