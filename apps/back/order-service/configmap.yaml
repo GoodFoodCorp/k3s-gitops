@@ -21,4 +21,6 @@ data:
   FRONTEND_URL: "https://app.c-mbk.fr"
   INVOICE_COMPANY_NAME: "Good Food"
   INVOICE_COMPANY_ADDRESS: "12 rue de la République, 75011 Paris"
-  # INVOICE_COMPANY_SIRET / INVOICE_COMPANY_VAT_NUMBER: the company's real numbers
+  # Valeurs fictives (projet) : à remplacer par les vrais numéros de la société.
+  INVOICE_COMPANY_SIRET: "12345678900012"
+  INVOICE_COMPANY_VAT_NUMBER: "FR12345678901"
