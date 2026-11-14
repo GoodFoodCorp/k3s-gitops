@@ -31,7 +31,7 @@ spec:
       containers:
         - name: auth-service
           # C'est cette ligne que GitHub Actions mettra à jour à chaque commit !
-          image: registry.c-mbk.fr/auth-service:v0.0.63
+          image: registry.c-mbk.fr/auth-service:v0.0.65
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
