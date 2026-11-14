@@ -3,6 +3,9 @@
 # anonymously (GET of one object only, no listing) and served by the ingress
 # at https://app.c-mbk.fr/avatars/<key>.
 # Credentials: secret minio-secret (MINIO_ROOT_USER, MINIO_ROOT_PASSWORD).
+# Images: minio/minio and minio/mc are no longer published (Docker Hub, quay.io),
+# so the frozen bitnamilegacy builds are used (no security updates: replace
+# them with an image built in-house when possible).
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -36,8 +39,12 @@ spec:
     spec:
       containers:
         - name: minio
-          image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+          image: bitnamilegacy/minio:2025.7.23-debian-12-r5
+          # The Bitnami entrypoint expects its own run.sh: start the binary directly.
+          command: ["/opt/bitnami/minio/bin/minio"]
           args: ["server", "/data"]
+          securityContext:
+            runAsUser: 0 # local-path volumes are root-owned and ignore fsGroup
           ports:
             - containerPort: 9000
           envFrom:
@@ -97,7 +104,10 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: mc
-          image: quay.io/minio/mc:RELEASE.2025-04-16T18-13-26Z
+          image: bitnamilegacy/minio-client:2025.7.21-debian-12-r3
+          env:
+            - name: MC_CONFIG_DIR
+              value: /tmp/.mc
           envFrom:
             - secretRef:
                 name: minio-secret
@@ -105,9 +115,10 @@ spec:
             - /bin/sh
             - -c
             - >
-              mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" &&
-              mc mb --ignore-existing local/avatars &&
-              mc anonymous set download local/avatars
+              MC=/opt/bitnami/minio-client/bin/mc;
+              $MC alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" &&
+              $MC mb --ignore-existing local/avatars &&
+              $MC anonymous set download local/avatars
           resources:
             requests:
               memory: "32Mi"
