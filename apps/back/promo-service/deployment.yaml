@@ -30,7 +30,7 @@ spec:
         - name: registry-c-mbk-secret
       containers:
         - name: promo-service
-          image: registry.c-mbk.fr/promo-service:v0.0.3
+          image: registry.c-mbk.fr/promo-service:v0.0.4
           imagePullPolicy: Always
           ports:
             - containerPort: 8092
