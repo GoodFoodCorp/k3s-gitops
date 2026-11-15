@@ -28,7 +28,7 @@ spec:
             claimName: assistant-data-pvc
       containers:
         - name: assistant-service
-          image: registry.c-mbk.fr/assistant-service:v0.0.5
+          image: registry.c-mbk.fr/assistant-service:v0.0.6
           imagePullPolicy: Always
           ports:
             - containerPort: 8093
